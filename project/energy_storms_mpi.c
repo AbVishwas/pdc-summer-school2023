@@ -183,8 +183,8 @@ int main(int argc, char *argv[]) {
         storms[i-2] = read_storm_file( argv[i] );
 
     /* 1.3. Intialize maximum levels to zero */
-    float local_maximum[ num_storms ], global_maximum[ num_storms ] ;
-    int local_positions[ num_storms ], global_positions[ num_storms ];
+    float local_maximum[ num_storms ], global_maximum[ num_storms ];
+    int local_positions[ num_storms ], global_positions[ num_storms ], max_rank[num_storms];
     for (i=0; i<num_storms; i++) {
         local_maximum[i] = 0.0f;
         local_positions[i] = 0;
@@ -296,10 +296,28 @@ int main(int argc, char *argv[]) {
         MPI_Barrier(MPI_COMM_WORLD);
         MPI_Reduce(&local_maximum[i], &global_maximum[i], 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
-        if (rank == 0) {
-            printf("FOR ALL LAYER_SIZE --> Max.value:  %f\n", global_maximum[i]);
-            printf("FOR ALL LAYER_SIZE --> located at: %d\n", global_positions[i]);
+        max_rank[i] = -1;
+        int global_max_rank = -1;
+        if(local_maximum[i] == global_maximum[i]) {
+            max_rank[i] = i;
         }
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        // to know the global position just identify which rank is the max value found
+        // then we found the max value of the max_rank[i] initiated in -1, so if is between 0 and n cores... we will have found something
+        MPI_Reduce(&max_rank[i], &global_max_rank, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+
+        if(rank == 0){
+            if(global_max_rank != -1) {
+                printf("Rank %d contains the maximum value.\n", global_max_rank);
+            } else {
+                printf("No process contains the maximum value.\n");
+            }
+
+            printf("FOR ALL LAYER_SIZE --> Max.value:  %f\n", global_maximum[i]);
+            printf("FOR ALL LAYER_SIZE --> located at: %d\n", global_max_rank);
+        }
+        
 
         /* then need to find maximum between all ranks*/
         t44 = cp_Wtime() - t44;
