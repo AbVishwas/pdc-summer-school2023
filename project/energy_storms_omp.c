@@ -24,6 +24,7 @@
 /* Headers for the OpenMP assignment versions */
 #include<omp.h>
 
+
 /* Use fopen function in local tests. The Tablon online judge software 
    substitutes it by a different function to run in its sandbox */
 #ifdef CP_TABLON
@@ -78,7 +79,7 @@ void update( float *layer, int layer_size, int k, int pos, float energy ) {
 void debug_print(int layer_size, float *layer, int *positions, float *maximum, int num_storms ) {
     int i,k;
     /* Only print for array size up to 35 (change it for bigger sizes if needed) */
-    if ( layer_size <= 35 ) {
+    if ( layer_size <= 100 ) {
         /* Traverse layer */
         for( k=0; k<layer_size; k++ ) {
             /* Print the energy value of the current cell */
@@ -153,7 +154,7 @@ int main(int argc, char *argv[]) {
 
     /* 1.1. Read arguments */
     if (argc<3) {
-        fprintf(stderr,"Usage: %s <size> <storm_1_file> [ <storm_i_file> ] ... \n", argv[0] );
+        //fprintf(stderr,"Usage: %s <size> <storm_1_file> [ <storm_i_file> ] ... \n", argv[0] );
         exit( EXIT_FAILURE );
     }
 
@@ -179,54 +180,113 @@ int main(int argc, char *argv[]) {
     /* START: Do NOT optimize/parallelize the code of the main program above this point */
 
     /* 3. Allocate memory for the layer and initialize to zero */
+    double t3 = cp_Wtime();
+
     float *layer = (float *)malloc( sizeof(float) * layer_size );
     float *layer_copy = (float *)malloc( sizeof(float) * layer_size );
     if ( layer == NULL || layer_copy == NULL ) {
         fprintf(stderr,"Error: Allocating the layer memory\n");
         exit( EXIT_FAILURE );
     }
-    for( k=0; k<layer_size; k++ ) layer[k] = 0.0f;
-    for( k=0; k<layer_size; k++ ) layer_copy[k] = 0.0f;
-    
+    t3 = cp_Wtime() - t3;
+
+    /* the for to =0 layers is in parallel, 
+    static because the computation is the same at each iteration,
+    layers are shared because are opened by all threads */
+    double t4 = cp_Wtime();
+
+    #pragma omp parallel for schedule(static)   
+    for( k=0; k<layer_size; k++ ) 
+    {
+        //id will be private
+        //printf("CPU ID ==> %d", id);
+        layer[k] = 0.0f;
+        layer[k] = 0.0f;
+    }
+
+    // ensure that both layers are starting from 0
+    //#pragma omp barrier
+
+    //at this point all is finished
+    /*#pragma omp single
+    {
+        printf("layer and copy initialized to 0!");
+    }*/
+
+    t4 = cp_Wtime() - t4;
+
+    double t5 = cp_Wtime();
+    double t51 = 0.0;
+    double t52 = 0.0;
+    double t53 = 0.0;
+    double t54 = 0.0;
+
     /* 4. Storms simulation */
+    //#pragma omp parallel for shared(layer,storms) private(k,j)
     for( i=0; i<num_storms; i++) {
 
         /* 4.1. Add impacts energies to layer cells */
         /* For each particle */
-        for( j=0; j<storms[i].size; j++ ) {
+
+        t51 = cp_Wtime();
+
+        for( j=0; j<storms[i].size; j++ ){
             /* Get impact energy (expressed in thousandths) */
+            //printf("storms[i].size ---> %d  \n",storms[i].size);
             float energy = (float)storms[i].posval[j*2+1] * 1000;
             /* Get impact position */
             int position = storms[i].posval[j*2];
 
+            //printf("impacts added --> for j=%d in ID = %d \n",j, omp_get_thread_num());
+
             /* For each cell in the layer */
+            #pragma omp parallel for schedule(static)
             for( k=0; k<layer_size; k++ ) {
                 /* Update the energy value for the cell */
+                //printf("each cell in the layer updated -- k = %d by ID = %d \n", k, omp_get_thread_num());
                 update( layer, layer_size, k, position, energy );
             }
-        }
-
+            }
+        t51 = cp_Wtime() - t51;
+        
         /* 4.2. Energy relaxation between storms */
         /* 4.2.1. Copy values to the ancillary array */
-        for( k=0; k<layer_size; k++ ) 
+        t52 = cp_Wtime();
+        #pragma omp parallel for schedule(static)
+        for( k=0; k<layer_size; k++){
             layer_copy[k] = layer[k];
-
+        }
+        t52 = cp_Wtime() - t52;
+        
         /* 4.2.2. Update layer using the ancillary values.
                   Skip updating the first and last positions */
-        for( k=1; k<layer_size-1; k++ )
+        //#pragma omp barrier
+        t53 = cp_Wtime();
+        #pragma omp parallel for schedule(static)
+        for( k=1; k<layer_size-1; k++ ){
             layer[k] = ( layer_copy[k-1] + layer_copy[k] + layer_copy[k+1] ) / 3;
+        }
+        t53 = cp_Wtime() - t53;
 
+        //#pragma omp barrier
+        t54 = cp_Wtime();
         /* 4.3. Locate the maximum value in the layer, and its position */
-        for( k=1; k<layer_size-1; k++ ) {
+        #pragma omp parallel for
+        for( k=1; k<layer_size-1; k++ ){
             /* Check it only if it is a local maximum */
             if ( layer[k] > layer[k-1] && layer[k] > layer[k+1] ) {
                 if ( layer[k] > maximum[i] ) {
                     maximum[i] = layer[k];
                     positions[i] = k;
+                    //printf("maximum now --> %f", maximum[i]);
                 }
             }
         }
+        t54 = cp_Wtime() - t54;
+        
     }
+    t5 = cp_Wtime() - t5;
+    
 
     /* END: Do NOT optimize/parallelize the code below this point */
 
@@ -241,7 +301,14 @@ int main(int argc, char *argv[]) {
     /* 7. Results output, used by the Tablon online judge software */
     printf("\n");
     /* 7.1. Total computation time */
-    printf("Time: %lf\n", ttotal );
+    printf("Time total: %lf\n", ttotal );
+    printf("Time 3: %lf\n", t3 );
+    printf("Time 4: %lf\n", t4 );
+    printf("Time 5: %lf\n", t5 );
+    printf("Time 5.1: %lf\n", t51 );
+    printf("Time 5.2: %lf\n", t52 );
+    printf("Time 5.3: %lf\n", t53 );
+    printf("Time 5.4: %lf\n", t54 );
     /* 7.2. Print the maximum levels */
     printf("Result:");
     for (i=0; i<num_storms; i++)

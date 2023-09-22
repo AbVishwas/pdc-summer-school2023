@@ -48,12 +48,23 @@ typedef struct {
     int *posval; // Positions and values
 } Storm;
 
+/* we need a new function to give local and global index for the values */
+int get_global_index(int local_index, int rank, int local_sizes[]) {
+    int global_index = local_index;
+
+    for (int i=0; i < rank; i++)
+        global_index += local_sizes[i];
+
+    return global_index;
+}
+
+
 /* THIS FUNCTION CAN BE MODIFIED */
 /* Function to update a single position of the layer */
-void update( float *layer, int layer_size, int k, int pos, float energy ) {
+void update( float *layer, int layer_size, int k, int pos, float energy, int local_size, int rank) {
     /* 1. Compute the absolute value of the distance between the
         impact position and the k-th position of the layer */
-    int distance = pos - k;
+    int distance = pos - ((local_size*rank)+k);
     if ( distance < 0 ) distance = - distance;
 
     /* 2. Impact cell has a distance value of 1 */
@@ -172,68 +183,128 @@ int main(int argc, char *argv[]) {
         storms[i-2] = read_storm_file( argv[i] );
 
     /* 1.3. Intialize maximum levels to zero */
-    float maximum[ num_storms ];
-    int positions[ num_storms ];
+    float local_maximum[ num_storms ], global_maximum[ num_storms ] ;
+    int local_positions[ num_storms ], global_positions[ num_storms ];
     for (i=0; i<num_storms; i++) {
-        maximum[i] = 0.0f;
-        positions[i] = 0;
+        local_maximum[i] = 0.0f;
+        local_positions[i] = 0;
+        global_maximum[i] = 0.0f;
+        global_positions[i] = 0;
     }
 
     /* 2. Begin time measurement */
     MPI_Barrier(MPI_COMM_WORLD);
+
     double ttotal = cp_Wtime();
 
     /* START: Do NOT optimize/parallelize the code of the main program above this point */
-
+    
     /* 3. Allocate memory for the layer and initialize to zero */
+    double t3 = cp_Wtime();
+
+    int local_size = layer_size/size;
+
     float *layer = (float *)malloc( sizeof(float) * layer_size );
     float *layer_copy = (float *)malloc( sizeof(float) * layer_size );
     if ( layer == NULL || layer_copy == NULL ) {
         fprintf(stderr,"Error: Allocating the layer memory\n");
         exit( EXIT_FAILURE );
     }
-    for( k=0; k<layer_size; k++ ) layer[k] = 0.0f;
-    for( k=0; k<layer_size; k++ ) layer_copy[k] = 0.0f;
+    t3 = cp_Wtime() - t3;
+
+    double t31 = cp_Wtime();
+
+    for( k=0; k<local_size; k++ ) layer[k] = 0.0f;
+    for( k=0; k<local_size; k++ ) layer_copy[k] = 0.0f;
+
+    t31 = cp_Wtime() - t31;
+
+    double t4 = cp_Wtime();
+    double t41 = 0.0;
+    double t42 = 0.0;
+    double t43 = 0.0;
+    double t44 = 0.0;
     
     /* 4. Storms simulation */
+    //printf("num_storms = %d \n", num_storms);
     for( i=0; i<num_storms; i++) {
+
+        /* ********* 4.1 IS THE ONE TO OPTIMIZE! ************ */
 
         /* 4.1. Add impacts energies to layer cells */
         /* For each particle */
-        for( j=0; j<storms[i].size; j++ ) {
-            /* Get impact energy (expressed in thousandths) */
-            float energy = (float)storms[i].posval[j*2+1] * 1000;
-            /* Get impact position */
-            int position = storms[i].posval[j*2];
+        t41 = cp_Wtime();
 
-            /* For each cell in the layer */
-            for( k=0; k<layer_size; k++ ) {
-                /* Update the energy value for the cell */
-                update( layer, layer_size, k, position, energy );
+        //printf("storms[i].size = %d \n", storms[i].size);
+        //printf("rank = %d \n", rank);
+        //printf("size = %d \n", size);
+
+        for( j=0; j<storms[i].size; j++){
+                /* Get impact energy (expressed in thousandths) */
+                float energy = (float)storms[i].posval[j*2+1] * 1000;
+                /* Get impact position */
+                int position = storms[i].posval[j*2];
+
+                /* For each cell in the layer */
+                
+                for( k=0; k<local_size; k++ ) {
+                    /* Update the energy value for the cell */
+                    update( layer, layer_size, k, position, energy, local_size, rank);
+                }
+                MPI_Barrier(MPI_COMM_WORLD);
             }
-        }
+
+        t41 = cp_Wtime() - t41;
+        
+
+        /* ************************************************ */
 
         /* 4.2. Energy relaxation between storms */
         /* 4.2.1. Copy values to the ancillary array */
-        for( k=0; k<layer_size; k++ ) 
+        t42 = cp_Wtime();
+        for( k=0; k<local_size; k++ ) 
             layer_copy[k] = layer[k];
+
+        t42 = cp_Wtime() - t42;
 
         /* 4.2.2. Update layer using the ancillary values.
                   Skip updating the first and last positions */
-        for( k=1; k<layer_size-1; k++ )
+        t43 = cp_Wtime();
+        for( k=1; k<local_size-1; k++ )
             layer[k] = ( layer_copy[k-1] + layer_copy[k] + layer_copy[k+1] ) / 3;
 
+        t43 = cp_Wtime() - t43;
+
         /* 4.3. Locate the maximum value in the layer, and its position */
-        for( k=1; k<layer_size-1; k++ ) {
+        /* now, in the local layer*/
+        t44 = cp_Wtime();
+        for( k=1; k<local_size-1; k++ ) {
             /* Check it only if it is a local maximum */
             if ( layer[k] > layer[k-1] && layer[k] > layer[k+1] ) {
-                if ( layer[k] > maximum[i] ) {
-                    maximum[i] = layer[k];
-                    positions[i] = k;
+                if ( layer[k] > local_maximum[i] ) {
+                    local_maximum[i] = layer[k];
+                    local_positions[i] = k;
                 }
             }
         }
+
+        printf("For rank %d --> Max.value : %f\n", rank, local_maximum[i]);
+        printf("For rank %d --> located at: %d\n", rank, local_positions[i]);
+
+        /* then, we find the global maximum value */
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Reduce(&local_maximum[i], &global_maximum[i], 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+
+        if (rank == 0) {
+            printf("FOR ALL LAYER_SIZE --> Max.value:  %f\n", global_maximum[i]);
+            printf("FOR ALL LAYER_SIZE --> located at: %d\n", global_positions[i]);
+        }
+
+        /* then need to find maximum between all ranks*/
+        t44 = cp_Wtime() - t44;
     }
+    t4 = cp_Wtime() - t4;
 
     /* END: Do NOT optimize/parallelize the code below this point */
 
@@ -241,30 +312,40 @@ int main(int argc, char *argv[]) {
     MPI_Barrier(MPI_COMM_WORLD);
     ttotal = cp_Wtime() - ttotal;
 
-    if ( rank == 0 ) {
+    //if ( rank == 0 ) {
 
     /* 6. DEBUG: Plot the result (only for layers up to 35 points) */
     #ifdef DEBUG
     debug_print( layer_size, layer, positions, maximum, num_storms );
     #endif
 
-    /* 7. Results output, used by the Tablon online judge software */
-    printf("\n");
-    /* 7.1. Total computation time */
-    printf("Time: %lf\n", ttotal );
-    /* 7.2. Print the maximum levels */
-    printf("Result:");
-    for (i=0; i<num_storms; i++)
-        printf(" %d %f", positions[i], maximum[i] );
-    printf("\n");
+    if ( rank == 0 ) {
 
+        /* 7. Results output, used by the Tablon online judge software */
+        printf("\n");
+        /* 7.1. Total computation time */
+        printf("Time: %lf\n", ttotal );
+        printf("Time 3: %lf\n", t3 );
+        printf("Time 3.1: %lf\n", t31 );
+        printf("Time 4: %lf\n", t4 );
+        printf("Time 4.1: %lf\n", t41 );
+        printf("Time 4.2: %lf\n", t42 );
+        printf("Time 4.3: %lf\n", t43 );
+        printf("Time 4.4: %lf\n", t44 );
+        /* 7.2. Print the maximum levels */
+        printf("Result:");
+        for (i=0; i<num_storms; i++)
+            printf(" %d %f", global_positions[i], global_maximum[i] );
+        printf("\n");
     }
+
+    //}
 
     /* 8. Free resources */    
     for( i=0; i<argc-2; i++ )
         free( storms[i].posval );
 
     /* 9. Program ended successfully */
+    MPI_Finalize();
     return 0;
 }
-
