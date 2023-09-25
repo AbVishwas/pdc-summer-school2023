@@ -288,8 +288,8 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        printf("For rank %d --> Max.value : %f\n", rank, local_maximum[i]);
-        printf("For rank %d --> located at: %d\n", rank, local_positions[i]);
+        //printf("For rank %d --> Max.value : %f\n", rank, local_maximum[i]);
+        //printf("For rank %d --> located at: %d\n", rank, local_positions[i]);
 
         /* then, we find the global maximum value */
 
@@ -309,13 +309,13 @@ int main(int argc, char *argv[]) {
 
         if(rank == 0){
             if(global_max_rank != -1) {
-                printf("Rank %d contains the maximum value.\n", global_max_rank);
+                //printf("Rank %d contains the maximum value.\n", global_max_rank);
             } else {
-                printf("No process contains the maximum value.\n");
+                //printf("No process contains the maximum value.\n");
             }
 
-            printf("FOR ALL LAYER_SIZE --> Max.value:  %f\n", global_maximum[i]);
-            printf("FOR ALL LAYER_SIZE --> located at: %d\n", global_max_rank);
+            //printf("FOR ALL LAYER_SIZE --> Max.value:  %f\n", global_maximum[i]);
+            //printf("FOR ALL LAYER_SIZE --> located at: %d\n", global_max_rank);
         }
         
 
@@ -343,13 +343,13 @@ int main(int argc, char *argv[]) {
         printf("\n");
         /* 7.1. Total computation time */
         printf("Time: %lf\n", ttotal );
-        printf("Time 3: %lf\n", t3 );
-        printf("Time 3.1: %lf\n", t31 );
-        printf("Time 4: %lf\n", t4 );
-        printf("Time 4.1: %lf\n", t41 );
-        printf("Time 4.2: %lf\n", t42 );
-        printf("Time 4.3: %lf\n", t43 );
-        printf("Time 4.4: %lf\n", t44 );
+        //printf("Time 3: %lf\n", t3 );
+        //printf("Time 3.1: %lf\n", t31 );
+        //printf("Time 4: %lf\n", t4 );
+        //printf("Time 4.1: %lf\n", t41 );
+        //printf("Time 4.2: %lf\n", t42 );
+        //printf("Time 4.3: %lf\n", t43 );
+        //printf("Time 4.4: %lf\n", t44 );
         /* 7.2. Print the maximum levels */
         printf("Result:");
         for (i=0; i<num_storms; i++)

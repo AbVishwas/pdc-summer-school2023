@@ -302,13 +302,13 @@ int main(int argc, char *argv[]) {
     printf("\n");
     /* 7.1. Total computation time */
     printf("Time total: %lf\n", ttotal );
-    printf("Time 3: %lf\n", t3 );
-    printf("Time 4: %lf\n", t4 );
-    printf("Time 5: %lf\n", t5 );
-    printf("Time 5.1: %lf\n", t51 );
-    printf("Time 5.2: %lf\n", t52 );
-    printf("Time 5.3: %lf\n", t53 );
-    printf("Time 5.4: %lf\n", t54 );
+    /*printf("Time 2: %lf\n", t3 );
+    printf("Time 3: %lf\n", t4 );
+    printf("Time 4: %lf\n", t5 );
+    printf("Time 4.1: %lf\n", t51 );
+    printf("Time 4.2: %lf\n", t52 );
+    printf("Time 4.3: %lf\n", t53 );
+    printf("Time 4.4: %lf\n", t54 );*/
     /* 7.2. Print the maximum levels */
     printf("Result:");
     for (i=0; i<num_storms; i++)
