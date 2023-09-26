@@ -1,0 +1,22 @@
+This job can be monitored from: https://scruffy.c3se.chalmers.se/d/alvis-job/alvis-job?var-jobid=1365468&from=1695741185000
+******START ******* sequential  ****************** \n
+
+Time: 0.000001
+Result: 10 3639.926758
+
+Time: 1.647508
+Result: 17197 1103.167480
+
+Time: 0.670130
+Result: 10 0.000080
+******START ******* cuda  ****************** \n
+
+Time: 0.000255
+Result: 10 3639.926758
+
+Time: 0.005606
+Result: 17197 1103.167480
+-- Error CUDA call in line 314: an illegal memory access was encountered
+
+Time: 0.370137
+Result: 0 0.000000
