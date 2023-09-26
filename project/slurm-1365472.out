@@ -1,9 +1,0 @@
-This job can be monitored from: https://scruffy.c3se.chalmers.se/d/alvis-job/alvis-job?var-jobid=1365472&from=1695741431000
-******START ******* sequential  ****************** \n
-
-Time: 0.000004
-Result: 10 3639.926758
-
-Time: 1.644350
-Result: 17197 1103.167480
-slurmstepd: error: *** JOB 1365472 ON alvis1-02 CANCELLED AT 2023-09-26T17:22:36 ***
