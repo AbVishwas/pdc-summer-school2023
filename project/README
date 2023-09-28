@@ -18,15 +18,16 @@ In order to launch and test the code:
 
 --> CUDA: (In this project, running in ALVIS machine, using one V100 volta nvidia GPUS)
 
-    `make energy_storms_cuda_test2.cu`
+    '''make energy_storms_cuda_test2`
     `module load AlphaFold/2.2.2-foss-2021a-CUDA-11.3.1`
     `module load cuDNN/8.2.1.32-CUDA-11.3.1`
     `./energy_storms_cuda_test2_(TPB) 35 test_files/test_01_a35_p5_w3`
     `./energy_storms_cuda_test2_(TPB) 30000 test_files/test_02_a30k_p20k_w1`
-    `./energy_storms_cuda_test2_(TPB) 10000000 test_files/test_07_a1M_p5k_w1`
+    `./energy_storms_cuda_test2_(TPB) 10000000 test_files/test_07_a1M_p5k_w1`'''
 
 --> OpenMP: (running on dardel, using one node)
 
+    `make energy_storms_omp`
     `export OMP_NUM_THREADS=(num_threads)``
     `./energy_storms_omp 35 test_files/test_01_a35_p5_w3`
     `./energy_storms_omp 30000 test_files/test_02_a30k_p20k_w1`
@@ -36,6 +37,7 @@ In order to launch and test the code:
 
 --> MPI: (running on dardel, using one node)
 
+    `make energy_storms_mpi`
     `srun -n (num_threads) ./energy_storms_mpi 35 test_files/test_01_a35_p5_w3`
     `srun -n (num_threads) ./energy_storms_mpi 30000 test_files/test_02_a30k_p20k_w1`
     `srun -n (num_threads) ./energy_storms_mpi 1000000 test_files/test_07_a1M_p5k_w1`
