@@ -1,0 +1,30 @@
+make: 'energy_storms_mpi' is up to date.
+MODULES LOADED! and energy_storms_mpi.c COMPILED! \n
+****** START ******* srun -n 4 ****************** \n
+
+Time: 12.584723
+Result: 0 12177.071289
+****** START ******* srun -n 8 ****************** \n
+
+Time: 6.336964
+Result: 0 12177.071289
+****** START ******* srun -n 16 ****************** \n
+
+Time: 3.176577
+Result: 0 12177.071289
+****** START ******* srun -n 32 ****************** \n
+
+Time: 1.622241
+Result: 0 12177.071289
+****** START ******* srun -n 64 ****************** \n
+
+Time: 0.821264
+Result: 0 12177.071289
+****** START ******* srun -n 128 ****************** \n
+
+Time: 0.418592
+Result: 0 12177.071289
+****** START ******* srun -n 256 ****************** \n
+
+Time: 0.229970
+Result: 0 12177.071289

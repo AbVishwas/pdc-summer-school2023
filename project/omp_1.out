@@ -1,0 +1,30 @@
+make: 'energy_storms_omp' is up to date.
+MODULES LOADED! and energy_storms_omp.c COMPILED! \n
+******START ******* OMP_NUM_THREADS=4 ****************** \n
+
+Time total: 15.443638
+Result: 507805 12177.071289
+******START ******* OMP_NUM_THREADS=8 ****************** \n
+
+Time total: 7.708803
+Result: 507805 12177.071289
+******START ******* OMP_NUM_THREADS=16 ****************** \n
+
+Time total: 3.878823
+Result: 507805 12177.071289
+******START ******* OMP_NUM_THREADS=32 ****************** \n
+
+Time total: 1.956916
+Result: 507805 12177.071289
+******START ******* OMP_NUM_THREADS=64 ****************** \n
+
+Time total: 0.994311
+Result: 507805 12177.071289
+******START ******* OMP_NUM_THREADS=128 ****************** \n
+
+Time total: 0.572293
+Result: 692612 12169.192383
+******START ******* OMP_NUM_THREADS=256 ****************** \n
+
+Time total: 3.601201
+Result: 507805 12177.071289

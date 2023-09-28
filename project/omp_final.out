@@ -1,0 +1,93 @@
+make: 'energy_storms_omp' is up to date.
+MODULES LOADED! and energy_storms_omp.c COMPILED! \n
+******START ******* OMP_NUM_THREADS=4 ****************** \n
+
+Time total: 0.005756
+Result: 5 3639.926758
+
+Time total: 1.898327
+Result: 17197 1103.167480
+
+Time total: 15.437217
+Result: 507805 12177.071289
+
+Time total: 0.359471
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=8 ****************** \n
+
+Time total: 0.004696
+Result: 10 3639.926758
+
+Time total: 0.979011
+Result: 17197 1103.167480
+
+Time total: 7.714595
+Result: 507805 12177.071289
+
+Time total: 0.182644
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=16 ****************** \n
+
+Time total: 0.005594
+Result: 10 3639.926758
+
+Time total: 0.526385
+Result: 19299 1090.672974
+
+Time total: 3.876909
+Result: 507805 12177.071289
+
+Time total: 0.098410
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=32 ****************** \n
+
+Time total: 0.006429
+Result: 10 3639.926758
+
+Time total: 0.325396
+Result: 17574 1090.557007
+
+Time total: 1.961353
+Result: 507805 12177.071289
+
+Time total: 0.058044
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=64 ****************** \n
+
+Time total: 0.009544
+Result: 10 3639.926758
+
+Time total: 0.199648
+Result: 16256 1078.840820
+
+Time total: 0.995959
+Result: 507805 12177.071289
+
+Time total: 0.041170
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=128 ****************** \n
+
+Time total: 0.013692
+Result: 10 3639.926758
+
+Time total: 0.172953
+Result: 15452 954.854675
+
+Time total: 0.567262
+Result: 507805 12177.071289
+
+Time total: 0.037329
+Result: 10 0.000080
+******START ******* OMP_NUM_THREADS=256 ****************** \n
+
+Time total: 0.044969
+Result: 10 3639.926758
+
+Time total: 14.068204
+Result: 17197 1103.167480
+
+Time total: 3.918251
+Result: 507805 12177.071289
+
+Time total: 0.051031
+Result: 10 0.000080

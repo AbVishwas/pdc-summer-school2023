@@ -1,0 +1,15 @@
+make: 'energy_storms_seq' is up to date.
+MODULES LOADED! and energy_storms_seq.c COMPILED! \n
+******START ******* srun -n 4 ****************** \n
+
+Time: 0.000004
+Result: 10 3639.926758
+
+Time: 3.013253
+Result: 17197 1103.167480
+
+Time: 0.710402
+Result: 10 0.000080
+
+Time: 25.162809
+Result: 507805 12177.071289
