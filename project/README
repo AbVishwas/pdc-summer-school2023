@@ -18,12 +18,12 @@ In order to launch and test the code:
 
 --> CUDA: (In this project, running in ALVIS machine, using one V100 volta nvidia GPUS)
 
-    `make energy_storms_cuda_test2`
+    '''make energy_storms_cuda_test2`
     `module load AlphaFold/2.2.2-foss-2021a-CUDA-11.3.1`
     `module load cuDNN/8.2.1.32-CUDA-11.3.1`
     `./energy_storms_cuda_test2_(TPB) 35 test_files/test_01_a35_p5_w3`
     `./energy_storms_cuda_test2_(TPB) 30000 test_files/test_02_a30k_p20k_w1`
-    `./energy_storms_cuda_test2_(TPB) 10000000 test_files/test_07_a1M_p5k_w1`
+    `./energy_storms_cuda_test2_(TPB) 10000000 test_files/test_07_a1M_p5k_w1`'''
 
 --> OpenMP: (running on dardel, using one node)
 
