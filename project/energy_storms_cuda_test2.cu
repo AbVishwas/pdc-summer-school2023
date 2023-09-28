@@ -26,7 +26,7 @@
 /* Headers for the CUDA assignment versions */
 #include<cuda.h>
 
-#define TPB 256 // threads per block in x direction (columns)
+#define TPB 512 // threads per block in x direction (columns)
 #define RAD 1 // radius for ghost cells
 
 /*
@@ -311,7 +311,7 @@ int main(int argc, char *argv[]) {
     /* END: Do NOT optimize/parallelize the code below this point */
 
     /* 5. End time measurement */
-	  CHECK_CUDA_CALL( cudaDeviceSynchronize() );
+	CHECK_CUDA_CALL( cudaDeviceSynchronize() );
     ttotal = cp_Wtime() - ttotal;
 
     /* 6. DEBUG: Plot the result (only for layers up to 35 points) */
