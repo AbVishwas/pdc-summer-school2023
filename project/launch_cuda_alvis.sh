@@ -15,6 +15,35 @@ echo "******START ******* sequential    ****************** \n"
 ./energy_storms_seq 30000 test_files/test_02_a30k_p20k_w1
 ./energy_storms_seq 1000000 test_files/test_07_a1M_p5k_w1                #test_08_a100M_p1_w2
 
+echo "******START ******* cuda TPB 4 ****************** \n"
+./energy_storms_cuda_test2_4 35 test_files/test_01_a35_p5_w3
+./energy_storms_cuda_test2_4 30000 test_files/test_02_a30k_p20k_w1
+./energy_storms_cuda_test2_4 1000000 test_files/test_07_a1M_p5k_w1
+
+echo "******START ******* cuda TPB 8  ****************** \n"
+./energy_storms_cuda_test2_8 35 test_files/test_01_a35_p5_w3
+./energy_storms_cuda_test2_8 30000 test_files/test_02_a30k_p20k_w1
+./energy_storms_cuda_test2_8 1000000 test_files/test_07_a1M_p5k_w1
+
+echo "******START ******* cuda TPB 16 ****************** \n"
+./energy_storms_cuda_test2_16 35 test_files/test_01_a35_p5_w3
+./energy_storms_cuda_test2_16 30000 test_files/test_02_a30k_p20k_w1
+./energy_storms_cuda_test2_16 1000000 test_files/test_07_a1M_p5k_w1
+
+
+
+echo "******START ******* cuda TPB 32 ****************** \n"
+./energy_storms_cuda_test2_32 35 test_files/test_01_a35_p5_w3
+./energy_storms_cuda_test2_32 30000 test_files/test_02_a30k_p20k_w1
+./energy_storms_cuda_test2_32 1000000 test_files/test_07_a1M_p5k_w1
+
+
+echo "******START ******* cuda TPB 64 ****************** \n"
+./energy_storms_cuda_test2_64 35 test_files/test_01_a35_p5_w3
+./energy_storms_cuda_test2_64 30000 test_files/test_02_a30k_p20k_w1
+./energy_storms_cuda_test2_64 1000000 test_files/test_07_a1M_p5k_w1
+
+
 echo "******START ******* cuda TPB 64 ****************** \n"
 ./energy_storms_cuda_test2_64 35 test_files/test_01_a35_p5_w3
 ./energy_storms_cuda_test2_64 30000 test_files/test_02_a30k_p20k_w1

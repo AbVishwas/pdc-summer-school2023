@@ -26,7 +26,7 @@
 /* Headers for the CUDA assignment versions */
 #include<cuda.h>
 
-#define TPB 512 // threads per block in x direction (columns)
+#define TPB 32 // threads per block in x direction (columns)
 #define RAD 1 // radius for ghost cells
 
 /*
