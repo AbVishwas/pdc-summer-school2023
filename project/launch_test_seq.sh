@@ -23,3 +23,4 @@ echo "******START ******* srun -n 4 ****************** \n"
 ./energy_storms_seq 35 test_files/test_01_a35_p5_w3
 ./energy_storms_seq 30000 test_files/test_02_a30k_p20k_w1
 ./energy_storms_seq 100000000 test_files/test_08_a100M_p1_w1
+./energy_storms_seq 1000000 test_files/test_07_a1M_p5k_w1

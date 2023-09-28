@@ -1,0 +1,93 @@
+make: 'energy_storms_mpi' is up to date.
+MODULES LOADED! and energy_storms_mpi.c _mpiILED! \n
+****** START ******* srun -n 4 ****************** \n
+
+Time: 0.000626
+Result: 0 3639.926758
+
+Time: 1.533479
+Result: 0 1103.167480
+
+Time: 12.587836
+Result: 0 12177.071289
+
+Time: 0.393968
+Result: 0 0.000080
+****** START ******* srun -n 8 ****************** \n
+
+Time: 0.000069
+Result: 0 3639.926758
+
+Time: 0.801111
+Result: 0 1103.167480
+
+Time: 6.286514
+Result: 0 12177.071289
+
+Time: 0.254190
+Result: 0 0.000080
+****** START ******* srun -n 16 ****************** \n
+
+Time: 0.000086
+Result: 0 3639.926758
+
+Time: 0.452671
+Result: 0 1103.167480
+
+Time: 3.170824
+Result: 0 12177.071289
+
+Time: 0.177142
+Result: 0 0.000080
+****** START ******* srun -n 32 ****************** \n
+
+Time: 0.000108
+Result: 0 0.000000
+
+Time: 0.288385
+Result: 0 1103.167480
+
+Time: 1.612325
+Result: 0 12177.071289
+
+Time: 0.120772
+Result: 0 0.000080
+****** START ******* srun -n 64 ****************** \n
+
+Time: 0.000474
+Result: 0 0.000000
+
+Time: 0.163346
+Result: 0 1103.167480
+
+Time: 0.831433
+Result: 0 12177.071289
+
+Time: 0.064704
+Result: 0 0.000080
+****** START ******* srun -n 128 ****************** \n
+
+Time: 0.000425
+Result: 0 0.000000
+
+Time: 0.126360
+Result: 0 1103.167480
+
+Time: 0.418553
+Result: 0 12177.071289
+
+Time: 0.044275
+Result: 0 0.000080
+****** START ******* srun -n 256 ****************** \n
+
+Time: 0.000997
+Result: 0 0.000000
+
+Time: 0.117942
+Result: 0 1103.167480
+
+Time: 0.225256
+Result: 0 12177.071289
+
+Time: 0.021482
+Result: 0 0.000080
